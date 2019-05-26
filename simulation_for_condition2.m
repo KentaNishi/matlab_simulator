@@ -29,7 +29,7 @@ set(0, 'defaultFigurePosition',[100 100 500 500]);
 % % set(gcf,'PaperPositionMode','auto')
 % set(fig,'PaperPositionMode','auto')
 % set(fig,'Position',[10 10 1670 1040]);
-global road_width; road_width = 10.0;%幅4mの道
+global road_width; road_width = 4.0;%幅4mの道
 global road_length; road_length = 20;%長さ20mの道
 %% 車両パラメータの設定 ここは基本変更なし
 global dt; dt=1/10; %計算に使用するdt
@@ -496,8 +496,8 @@ for i=1:1000
 
     grid on;
     axis equal;
-    xlim([0 20]);
-    ylim([-3 3]);
+    xlim([0 road_length]);
+    ylim([-1*road_width/2-1 road_width/2+1]);
 
     
     xlabel('X [m]');

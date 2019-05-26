@@ -4,7 +4,7 @@ filename_pre = 'batu_pedestrian_first_state_cruise';
 
 
 %for i = 1:300
-for i = 37:37
+for i = 45:45
     clear Pedestrian;
     file_number_str = num2str(ceil(i/3));
     if rem(i,3) == 1
