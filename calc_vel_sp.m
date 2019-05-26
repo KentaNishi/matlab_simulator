@@ -1,4 +1,6 @@
 function vel_sp = calc_vel_sp(x,Pedestrian,xt)
+%DWA－CSCに関する評価関数，速度に関する罰則を与える．
+%現在の衝突可能性のある対象が速度を保ったまま進むとき，ちょうど衝突するときの速度を最大として，それに近いほど罰則が大きい
 %この関数の返り値にκマックスをかける
 vel_sp = 0;
 for i = 1:length(Pedestrian)

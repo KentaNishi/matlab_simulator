@@ -1,4 +1,4 @@
-function path_array = state_lattice_motion_planner_ver2(x,existence_prohability_distribution_all,goal,predict_obserbable_pedestrian_position,time,Pedestrian)
+function path_array = motion_planner_ver2(x,existence_prohability_distribution_all,goal,predict_obserbable_pedestrian_position,time,Pedestrian)
 path_array = NaN;
 vel_str = num2str(min([16,max([1,round(x(4),1)*10])]));
 k0 = [-deg2rad(30),-deg2rad(25),-deg2rad(20),-deg2rad(15),-deg2rad(10),-deg2rad(5),0,...
@@ -33,7 +33,7 @@ if size(observable_pedestrian_ind,1) == 1
     observable_pedestrian_ind = observable_pedestrian_ind';
 end
 observable_pedestrian_mat =[observable_pedestrian_mat,observable_pedestrian_direction,observable_pedestrian_ind];
-observable_pedestrian_mat = observable_pedestrian_mat(observable_pedestrian_mat(:,4)==0,:);%‹t•ûŒü‚Ì“z‚¾‚¯
+observable_pedestrian_mat = observable_pedestrian_mat(observable_pedestrian_mat(:,4)==0,:);%é€†æ–¹å‘ã®å¥´ã ã‘
 observable_pedestrian_mat = observable_pedestrian_mat(observable_pedestrian_mat(:,2)<4,:);
 observable_pedestrian_number = size(observable_pedestrian_mat,1);
 direction_to_ped_opposit = zeros(observable_pedestrian_number,1);
@@ -93,7 +93,7 @@ for itable = 1:table_length
     if abs(candidate_point(2)) > 2
         continue;
     end
-    is_collision = collision_check_for_simulator_ver2(candidate_point,existence_prohability_distribution_all);%•ÏX“_
+    is_collision = collision_check_for_simulator_ver2(candidate_point,existence_prohability_distribution_all);%å¤‰æ›´ç‚¹
     if is_collision == 1
         continue;
     end
@@ -112,7 +112,7 @@ for itable = 1:table_length
             is_collision_2 = 1;
             break;
         end
-        is_collision_2 = collision_check_for_simulator_ver2(candidate_point_2,existence_prohability_distribution_all);%•ÏX“_
+        is_collision_2 = collision_check_for_simulator_ver2(candidate_point_2,existence_prohability_distribution_all);%å¤‰æ›´ç‚¹
         if is_collision_2 == 1
             break;
         end
@@ -149,8 +149,8 @@ function last_position_and_p = search_nearest_one_from_lookuptable(x,y,yaw,looku
 end
 %}
 function [path_array,p,max_steer_angle] = optimize_trajectory(target, k0, p,x)
-h = [0.01,0.01,0.01]';%ƒjƒ…[ƒgƒ“–@‚ÅÅ“K’l‚Ì’Tõ‚ğ‚·‚éÛ‚Ì”÷¬•Î·C‰Á‘¬“xC’†ŠÔ‘ÇŠpCI’[‘ÇŠp‚Ì‡
-for i = 1:30%‚±‚Ì’l‚Í’²®‚ª‚¢‚é‚©‚à
+h = [0.01,0.01,0.01]';%ãƒ‹ãƒ¥ãƒ¼ãƒˆãƒ³æ³•ã§æœ€é©å€¤ã®æ¢ç´¢ã‚’ã™ã‚‹éš›ã®å¾®å°åå·®ï¼ŒåŠ é€Ÿåº¦ï¼Œä¸­é–“èˆµè§’ï¼Œçµ‚ç«¯èˆµè§’ã®é †
+for i = 1:30%ã“ã®å€¤ã¯èª¿æ•´ãŒã„ã‚‹ã‹ã‚‚
     path_array = motion_model_base_trajectory_genarator_consider_a_and_j(p(1),p(2),p(3),k0,x);
     %{
     steer_angle_array = path_array_pre(:,5);
@@ -182,7 +182,7 @@ for i = 1:30%‚±‚Ì’l‚Í’²®‚ª‚¢‚é‚©‚à
         end
 
         J = parameter_optimization(target,p,h,k0,x);
-        is_zero_vector = zeros(3,1);%“Á’è•Ï”‚¾‚¯‚Ì•½t“_‚Åˆ—‚ª~‚Ü‚ç‚È‚¢‚æ‚¤‚É
+        is_zero_vector = zeros(3,1);%ç‰¹å®šå¤‰æ•°ã ã‘ã®å¹³è¡¡ç‚¹ã§å‡¦ç†ãŒæ­¢ã¾ã‚‰ãªã„ã‚ˆã†ã«
         if J(1,1) == 0 && J(2,1) == 0 && J(3,1) == 0
             is_zero_vector(1) = 1;
         end
@@ -230,8 +230,8 @@ end
 
 end
   
-function last_state = generate_last_state(p1,p2,p3,k0,x)%p1:‰Á‘¬“xCp2:’†ŠÔ‘€‘ÇŠpCp3:I’[‘€‘ÇŠp
-    path_array = motion_model_base_trajectory_genarator_new(p1,p2,p3,k0,x);%‰Á‘¬“xC’†ŠÔ’n“_‚Ì‘€‘ÇŠpC–Ú•W‘€‘ÇŠpC‰Šú‘€‘ÇŠp
+function last_state = generate_last_state(p1,p2,p3,k0,x)%p1:åŠ é€Ÿåº¦ï¼Œp2:ä¸­é–“æ“èˆµè§’ï¼Œp3:çµ‚ç«¯æ“èˆµè§’
+    path_array = motion_model_base_trajectory_genarator_new(p1,p2,p3,k0,x);%åŠ é€Ÿåº¦ï¼Œä¸­é–“åœ°ç‚¹ã®æ“èˆµè§’ï¼Œç›®æ¨™æ“èˆµè§’ï¼ŒåˆæœŸæ“èˆµè§’
     path_length = size(path_array,1);
     last_state = path_array(path_length,1:3);
 end

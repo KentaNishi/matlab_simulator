@@ -1,7 +1,7 @@
 % 車両の運動力学
-function x = f_sim(x, u)
+function x = f_sim(x, u,dt)
 % Motion Model
-global dt_sim;
+
  
 F = [1 0 0 0 0
      0 1 0 0 0
@@ -9,14 +9,14 @@ F = [1 0 0 0 0
      0 0 0 0 0
      0 0 0 0 0];
  
-B = [dt_sim*cos(x(3)) 0
-    dt_sim*sin(x(3)) 0
+B = [dt*cos(x(3)) 0
+    dt*sin(x(3)) 0
     0 0
     1 0
     0 1];
 C = [0
     0
-    dt_sim
+    dt
     0
     0];
 w = u(1)*tan(u(2))/0.9; %ヨーレイトの算出u(1) = v,u(2) = delta,速度と操舵角
