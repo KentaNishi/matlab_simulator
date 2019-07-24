@@ -84,6 +84,7 @@ y_wall_under = [wall_left wall_left wall_left+1 wall_left+1];
 %% 歩行者の設定
 
 Pedestrian_ver3 = Pedestrian;
+
 ped_num = length(Pedestrian_ver3);
 %%
 
@@ -166,7 +167,7 @@ for i=1:1000
         %result.ped_estimated_position(num,i,2) = Pedestrian_ver3(num).estimated_position(2);
     end
     %DWAの計算周期[10Hz]
-    goal = [20 0];%goal = [x(1)+5 5];
+    %goal = [20 0];%goal = [x(1)+5 5];
     Pedestrian_ver3 = CheckVisible(x, Pedestrian_ver3);
     
     [u,traj,evalDB,ind_safe] = ...
@@ -395,7 +396,9 @@ for i=1:1000
 %↑DWAには不要なのでコメントアウト
     % セニアカーの状態更新
 %    x =  f_sim_new(x,u);
+
     x =  f_sim(x,u);
+
     x  = real(x);
     
     %{
@@ -416,7 +419,7 @@ for i=1:1000
         Pedestrian_ver3(num) = plusStep(Pedestrian_ver3(num),dt_sim);
         Pedestrian_ver3(num).tmp_position = [Pedestrian_ver3(num).tmp_position(1) max([-road_width/2 min([road_width/2 Pedestrian_ver3(num).tmp_position(2)])])];%壁から出ないように    
     end
-
+    
     %停止して進まなくなった時の処理
     
     if x(4) == 0
@@ -426,13 +429,8 @@ for i=1:1000
         end
         if i-stop_counter>100%速度が0になってからこの処理に入り，この処理の前でstop_counterに代入を行うので，stop_counterが0のままこの処理に入ってすぐプログラムが止まることはないはず
             disp('failed!!');
-            result.x(i+1:1000,:)=[];
-            result.ped(:,i+1:1000,:) = [];
-            result.ped_speed(:,i+1:1000) = [];
-            result.ped_position_error(:,i+1:1000) = [];
-            loop_finish_num = i;
             is_collision_now = Judgement_collision(x,Pedestrian_ver3);
-            result.x(i,6) = 0;%ちょっとややこしくなってる
+            result.x(i,6) = 0;%1*cruising_flag+3*following_flag+4*stop_flag+5*danger_flag;%ちょっとややこしくなってる
             result.x(i,7) = is_collision_now;
             break;
         end
@@ -512,12 +510,12 @@ for i=1:1000
         cx = 1; cy = 1; % 中心
         if Pedestrian_ver3(num).visible==1
 %            viscircles(Pedestrian_ver3(num).tmp_position,pedestrian_width,'Color','b');hold on;
-            viscircles(Pedestrian_ver3(num).tmp_position,pedestrian_width/2,'EdgeColor','b');hold on;
-            %plotPosition(Pedestrian_ver3(num),'ob');hold on;
+            %viscircles(Pedestrian_ver3(num).tmp_position,pedestrian_width/2,'EdgeColor','b');hold on;
+            plotPosition(Pedestrian_ver3(num),'ob');hold on;
         else
 %            viscircles(Pedestrian_ver3(num).tmp_position,pedestrian_width,'Color','y');hold on;
-            viscircles(Pedestrian_ver3(num).tmp_position,pedestrian_width/2,'EdgeColor','y');hold on;
-            %plotPosition(Pedestrian_ver3(num),'oy');hold on;
+            %viscircles(Pedestrian_ver3(num).tmp_position,pedestrian_width/2,'EdgeColor','y');hold on;
+            plotPosition(Pedestrian_ver3(num),'oy');hold on;
         end
         
         
