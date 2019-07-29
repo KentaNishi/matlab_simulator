@@ -1,5 +1,4 @@
 function dir_sp = calc_dir_sp(x,Pedestrian,xt)
-%DWA-CSC用の評価関数，角度に関する罰則を与える
 %この関数の返り値にθマックスをかける，θマックスは負の値？
 dir_sp =0;
 for i = 1:length(Pedestrian)

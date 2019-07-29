@@ -1,9 +1,9 @@
 function [] = iteration_simulation_for_DWA()
 PARAM = [0.15,0.25,0.1,0,0,2.0];
-PARAM_4 = [0.4,0.1,0.3,0.2,0.25]*(-1);
-PARAM_5 = [0.1,0.4,0.2,0.3,0.25]*(-1);
+PARAM_4 = [0.3,0.2,0.4,0.1,0.25]*(-1/2);
+PARAM_5 = [0.2,0.3,0.1,0.4,0.25]*(-1/2);
 filename_pre = 'batu_pedestrian_first_state_cruise';
-for a = 1:5
+for a = 5:-1:1
     PARAM = [0.15,0.25,0.1,PARAM_4(a),PARAM_5(a),2.0];
     emergency_counter_array = zeros(6,100);
 

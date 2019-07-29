@@ -1,27 +1,37 @@
 function [evalDB,trajDB]=Evaluation_DWA_CSC(x,Vr,goal,Kinematic,PARAM,Pedestrian)
 
+global vehicle_width;
+global vehicle_front_length;
+global vehicle_rear_length;
+global wall_left;
+global wall_right;
 evalDB=[];
 trajDB=[];
 p_ped =zeros(2,length(Pedestrian));
-
+car_y_position = zeros(4,1);
 for vt=Vr(1):Kinematic(5):Vr(2) % vt=velocity
     for ot=Vr(3):Kinematic(6):Vr(4) % ot=steer angle
         %‹OÕ‚Ì„’è
         [xt,traj]=GenerateTrajectory(x,vt,ot,PARAM(6),Kinematic);
-        %Še•]‰¿ŠÖ”‚ÌŒvZ
+        %Še•]‰¿ŠÖ”‚ÌŒvZ        
         
-        %«‚±‚±‚É•]‰¿ŠÖ”‚ğ‘‚­@2018.10.12.16:38
         heading = CalcHeadingEval(xt,goal);%³‹K‰»‚Í‚µ‚Ä‚È‚¢C‚ ‚Æ‚Å‚Ü‚Æ‚ß‚Ä³‹K‰»
         vel = CalcVelEval(vt);%³‹K‰»‚Í‚µ‚Ä‚È‚¢C‚ ‚Æ‚Å‚Ü‚Æ‚ß‚Ä³‹K‰»
         for i = 1:length(Pedestrian)
             p_ped(:,i) = [Pedestrian(i).tmp_position(1);Pedestrian(i).tmp_position(2)];
         end
+        car_y_position(1) = xt(2)+vehicle_width/2*cos(xt(3))+vehicle_front_length*sin(xt(3));
+        car_y_position(2) = xt(2)-vehicle_width/2*cos(xt(3))+vehicle_front_length*sin(xt(3));
+        car_y_position(3) = xt(2)+vehicle_width/2*cos(xt(3))-vehicle_rear_length*sin(xt(3));
+        car_y_position(4) = xt(2)-vehicle_width/2*cos(xt(3))-vehicle_rear_length*sin(xt(3));
         p_m_dist = p_ped - xt(1:2);
-        dist =  sqrt(min(sum(p_m_dist.*p_m_dist)));%•Ç‚ÉŠÖ‚µ‚Ä‚Í‚»‚à‚»‚à‚Ô‚Â‚©‚ç‚È‚¢‚æ‚¤‚É‚µ‚½‚Ì‚Ål‚¾‚¯‚ÅOK
-        dir_sp = calc_dir_sp(x,Pedestrian,xt);%‚±‚ÌŠÖ”‚ğì‚é@2018/10/12.19:17
-        vel_sp = calc_vel_sp(x,Pedestrian,xt);%‚±‚ÌŠÖ”‚ğì‚é@2018/10/12.19:17
+        ob_dist = min([abs(wall_left-car_y_position);abs(wall_right-car_y_position)]);
+        ped_dist =  sqrt(min(sum(p_m_dist.*p_m_dist)));
+        dist = min(ob_dist,ped_dist);
+        dir_sp = calc_dir_sp(x,Pedestrian,xt);
+        vel_sp = calc_vel_sp(x,Pedestrian,xt);
         
-        %ª‚±‚±‚É•]‰¿ŠÖ”‚ğ‘‚­  2018.10.12.16:38
+        
         
         %‘€ì‰Â”\‘¬“x
         possible_value = possible_velocity([vt ot]);
